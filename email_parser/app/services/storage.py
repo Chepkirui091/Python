@@ -1,15 +1,22 @@
 import json
-from pathlib import Path
+import os
 
+OUTPUT_FILE = "data/parsed_emails.json"
 
-def save_email(parsed_email: dict):
-    try:
-        data_dir = Path(__file__).resolve().parents[2] / "data"
-        data_dir.mkdir(parents=True, exist_ok=True)
+def save_email(email_obj):
+    data = {
+        "subject": email_obj.subject,
+        "sender": email_obj.sender,
+        "body": email_obj.body,
+        "attachments": email_obj.attachments
+    }
 
-        output_file = data_dir / "parsed_emails.jsonl"
-        with output_file.open("a", encoding="utf-8") as file:
-            file.write(json.dumps(parsed_email, ensure_ascii=False) + "\n")
-        return str(output_file)
-    except Exception:
-        return None
+    if not os.path.exists(OUTPUT_FILE):
+        with open(OUTPUT_FILE, "w") as f:
+            json.dump([], f)
+
+    with open(OUTPUT_FILE, "r+") as f:
+        content = json.load(f)
+        content.append(data)
+        f.seek(0)
+        json.dump(content, f, indent=4)
