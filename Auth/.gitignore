@@ -22,6 +22,7 @@ db.sqlite3-journal
 local_settings.py
 static/
 media/
+postgres_data/
 
 # IDE
 .idea/
